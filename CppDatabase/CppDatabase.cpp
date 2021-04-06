@@ -19,7 +19,7 @@ string genFilter()
 	//Todo: 从UI上构造过滤条件。注意处理条件格式不对的情况
 	return "";
 }
-INT_PTR CALLBACK DlgProc(HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
+INT CALLBACK DlgProc(HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 {
 	int ctrlID;
 	static ListView* listView;
@@ -34,11 +34,12 @@ INT_PTR CALLBACK DlgProc(HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			listView->AddColumn("Phone",3);
 			listView->AddColumn("Email",4);
 			listView->AddColumn("Age",5);
-			//TODO: 修改用户名、密码、数据库名
-			dal=new DAL("system","YIersan123","orcl");
+			//TODO: 修改用户名、密码、数据库名  
+			dal=new DAL("scott","tiger","orcl");
 		return TRUE;
 		case WM_COMMAND:
 			ctrlID=LOWORD(wParam);
+			listView->ClearContent();
 			switch(ctrlID)
 			{
 				//TODO: 检查数据库操作的结果是否成功
@@ -55,8 +56,10 @@ INT_PTR CALLBACK DlgProc(HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 					dal->Delete(genFilter());
 				break;
 			}
-			listView->ClearContent();
-			listView->Fill(dal->Get(""));//全部
+			if(ctrlID!=IDC_BTNSEL)
+			{
+				listView->Fill(dal->Get(""));//全部
+			}
 		return TRUE;
 		case WM_CLOSE:
 			EndDialog(hwnd,0);
